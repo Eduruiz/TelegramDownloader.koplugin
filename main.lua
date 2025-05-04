@@ -69,18 +69,23 @@ end
 function TelegramDownloader:checkForNewFiles()
     local updates = self:getUpdates()
     if updates and updates.result then
-        self:processUpdates(updates)
         if #updates.result > 0 then
+            UIManager:show(InfoMessage:new{
+            text = _("Downloading. This might take a moment."),
+            timeout = 1,
+            })
+            UIManager:forceRePaint ()
+            self:processUpdates(updates)
             self.tg_offset = updates.result[#updates.result].update_id + 1
             G_reader_settings:saveSetting("tg_offset", self.tg_offset)
         else
             UIManager:show(InfoMessage:new{
-            text = _("There is no new files") , -- No results.
+            text = _("There is no new files"),
             })
         end
     else
         UIManager:show(InfoMessage:new{
-        text = _("Connection failed") ,
+        text = _("Connection failed"),
         })
     end
 end
